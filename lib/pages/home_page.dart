@@ -13,15 +13,15 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<int> snakeposition = [45, 65, 85, 105, 125];
-  int numberOfSquares = 680;
+  int numberOfSquares = 600;
   int numberInRow = 20;
   static var randomNumber = Random();
-  int food = randomNumber.nextInt(640);
+  int food = randomNumber.nextInt(580);
   var direction = 'down';
 
   void startGame() {
     snakeposition = [45, 65, 85, 105, 125];
-    const duration = const Duration(seconds: 1);
+    const duration = const Duration(milliseconds: 300);
 
     Timer.periodic(
       duration,
@@ -44,7 +44,6 @@ class _HomePageState extends State<HomePage> {
           count += 1;
         }
         if (count == 2) {
-          print('gameOver');
           return true;
         }
       }
@@ -53,7 +52,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void generateNewFood() {
-    food = randomNumber.nextInt(640);
+    food = randomNumber.nextInt(580);
   }
 
   void _showDialogGameOver() {
@@ -91,24 +90,27 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       switch (direction) {
         case 'down':
-          if (snakeposition.last > 700) {
-            print(snakeposition.last + 20 - 720);
-            snakeposition.add(snakeposition.last + 20 - 720);
+          if (snakeposition.last > 580) {
+            snakeposition.add(snakeposition.last + 20 - 600);
+            print(snakeposition.last);
           } else {
             snakeposition.add(snakeposition.last + 20);
+            print(snakeposition.last);
           }
           break;
 
         case 'up':
           if (snakeposition.last < 20) {
-            snakeposition.add(snakeposition.last - 20 + 720);
+            snakeposition.add(snakeposition.last - 20 + 600);
+            print(snakeposition.last);
           } else {
+            print(snakeposition.last);
             snakeposition.add(snakeposition.last - 20);
           }
           break;
 
         case 'left':
-          if (snakeposition.last % numberInRow == 0) {
+          if (snakeposition.last % 20 == 0) {
             snakeposition.add(snakeposition.last - 1 + 20);
           } else {
             snakeposition.add(snakeposition.last - 1);
@@ -117,7 +119,6 @@ class _HomePageState extends State<HomePage> {
 
         case 'right':
           if ((snakeposition.last + 1) % 20 == 0) {
-            print(snakeposition.last + 1 - 20);
             snakeposition.add(snakeposition.last + 1 - 20);
           } else {
             snakeposition.add(snakeposition.last + 1);
@@ -138,6 +139,21 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.grey[900],
+        actions: [
+          Container(
+            alignment: Alignment.center,
+            margin: EdgeInsets.symmetric(horizontal: 20),
+            child: Text(
+              'Score:   ${snakeposition.length - 5}',
+              style: TextStyle(
+                fontSize: 24,
+              ),
+            ),
+          ),
+        ],
+      ),
       backgroundColor: Colors.black,
       body: SafeArea(
         child: Column(
@@ -171,36 +187,64 @@ class _HomePageState extends State<HomePage> {
                       if (index == food) {
                         return Food();
                       } else {
-                        return Pixel();
+                        return Container(
+                          child: Pixel(),
+                        );
                       }
                     },
                   ),
                 ),
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                GestureDetector(
-                  onTap: startGame,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 35, vertical: 15),
-                      color: Colors.green,
-                      child: Text(
-                        'Start',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 26,
+            Container(
+              color: Colors.grey[900],
+              height: 116,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    onTap: startGame,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 35, vertical: 15),
+                        color: Colors.green,
+                        child: Text(
+                          'Start',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 26,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        snakeposition = [45, 65, 85, 105, 125];
+                      });
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 35, vertical: 15),
+                        color: Colors.red,
+                        child: Text(
+                          'Stop',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 26,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
